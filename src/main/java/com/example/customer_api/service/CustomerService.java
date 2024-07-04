@@ -37,4 +37,8 @@ public class CustomerService {
             throw new RuntimeException("Customer not found");
         }
     }
+
+    public void deleteCustomer(Long id) {
+        customerRepository.deleteById(id);
+    }
 }

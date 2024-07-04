@@ -15,9 +15,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomerServiceTest {
@@ -81,5 +80,20 @@ public class CustomerServiceTest {
 
         verify(customerRepository).findById(customerId);
         verify(customerRepository).save(any(Customer.class));
+    }
+
+    @Test
+    public void testDeleteCustomer() {
+        Long customerId = 1L;
+        Customer customer = new Customer(customerId, "John Doe", "john@example.com", "123456789");
+
+        lenient().when(customerRepository.save(customer)).thenReturn(customer);
+        customerService.addCustomer(customer);
+
+        lenient().when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+
+        customerService.deleteCustomer(customerId);
+
+        verify(customerRepository, times(1)).deleteById(customerId);
     }
 }
