@@ -1,0 +1,1 @@
+INSERT INTO customer_db.customer (name, email, phone_number) VALUES ('Neider Urbano', 'neider@example.com', '3204524545'), ('Julian Bastilla', 'julian@example.com', '3202343800')

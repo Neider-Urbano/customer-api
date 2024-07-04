@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS customer_db.customer (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone_number VARCHAR(15)
+);

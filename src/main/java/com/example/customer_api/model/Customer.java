@@ -20,6 +20,6 @@ public class Customer {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(length = 15)
+    @Column(name = "phone_number", length = 15)
     private String phoneNumber;
 }
