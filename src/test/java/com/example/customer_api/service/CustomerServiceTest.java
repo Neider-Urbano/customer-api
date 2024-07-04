@@ -1,6 +1,7 @@
 package com.example.customer_api.service;
 
 
+import com.example.customer_api.exception.CustomerNotFoundException;
 import com.example.customer_api.model.Customer;
 import com.example.customer_api.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
@@ -13,9 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,7 +29,7 @@ public class CustomerServiceTest {
 
     @Test
     public void testAddCustomer() {
-        Customer customer = new Customer(null, "John Doe", "john@example.com", "123456789");
+        Customer customer = new Customer(null, "Neider Urbano", "neider@example.com", "3204524545");
         when(customerRepository.save(customer)).thenReturn(customer);
 
         Customer result = customerService.addCustomer(customer);
@@ -40,8 +40,8 @@ public class CustomerServiceTest {
     @Test
     public void testGetAllCustomers() {
         List<Customer> customers = Arrays.asList(
-                new Customer(1L, "John Doe", "john@example.com", "123456789"),
-                new Customer(2L, "Jane Smith", "jane@example.com", "987654321")
+                new Customer(1L, "Neider Urbano", "neider@example.com", "3204524545"),
+                new Customer(2L, "Julian Bastilla", "julian@example.com", "+57 3204524545")
         );
         when(customerRepository.findAll()).thenReturn(customers);
 
@@ -53,25 +53,32 @@ public class CustomerServiceTest {
     @Test
     public void testGetCustomerById() {
         Long customerId = 1L;
-        Customer customer = new Customer(customerId, "John Doe", "john@example.com", "123456789");
+        Customer customer = new Customer(customerId, "Neider Urbano", "neider@example.com", "3204524545");
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
 
-        Optional<Customer> result = customerService.getCustomerById(customerId);
+        Customer result = customerService.getCustomerById(customerId);
 
-        assertTrue(result.isPresent());
-        assertEquals(customer, result.get());
+        assertEquals(customer, result);
+    }
+
+    @Test
+    public void testGetCustomerById_NotFound() {
+        Long customerId = 1L;
+        when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
+
+        assertThrows(CustomerNotFoundException.class, () -> customerService.getCustomerById(customerId));
     }
 
     @Test
     public void testUpdateCustomer() {
         Long customerId = 1L;
-        Customer existingCustomer = new Customer(customerId, "John Doe", "john@example.com", "123456789");
-        Customer updatedCustomer = new Customer(customerId, "John Smith", "john.smith@example.com", "987654321");
+        Customer existingCustomer = new Customer(customerId, "Neider Urbano", "neider@example.com", "3204524545");
+        Customer updatedCustomer = new Customer(customerId, "Julian Bastilla", "julian@example.com", "+57 3204524545");
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(existingCustomer));
         when(customerRepository.save(any(Customer.class))).thenReturn(updatedCustomer);
 
-        Customer result = customerService.updateCustomer(updatedCustomer);
+        Customer result = customerService.updateCustomer(customerId, updatedCustomer);
 
         assertEquals(updatedCustomer.getId(), result.getId());
         assertEquals(updatedCustomer.getName(), result.getName());
@@ -83,17 +90,34 @@ public class CustomerServiceTest {
     }
 
     @Test
+    public void testUpdateCustomer_NotFound() {
+        Long customerId = 1L;
+        Customer customerDetails = new Customer(customerId, "Neider Urbano", "neider@example.com", "3204524545");
+        when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
+
+        assertThrows(CustomerNotFoundException.class, () -> customerService.updateCustomer(customerId, customerDetails));
+    }
+
+    @Test
     public void testDeleteCustomer() {
         Long customerId = 1L;
-        Customer customer = new Customer(customerId, "John Doe", "john@example.com", "123456789");
+        Customer customer = new Customer(customerId, "Neider Urbano", "neider@example.com", "3204524545");
 
-        lenient().when(customerRepository.save(customer)).thenReturn(customer);
+        when(customerRepository.save(customer)).thenReturn(customer);
         customerService.addCustomer(customer);
 
-        lenient().when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
 
         customerService.deleteCustomer(customerId);
 
-        verify(customerRepository, times(1)).deleteById(customerId);
+        verify(customerRepository, times(1)).delete(customer);
+    }
+
+    @Test
+    public void testDeleteCustomer_NotFound() {
+        Long customerId = 1L;
+        when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
+
+        assertThrows(CustomerNotFoundException.class, () -> customerService.deleteCustomer(customerId));
     }
 }
