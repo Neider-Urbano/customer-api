@@ -145,3 +145,6 @@ La API maneja varios tipos de errores y devuelve respuestas adecuadas con mensaj
 
 ## Pruebas Unitarias
 El proyecto incluye pruebas unitarias para los métodos del servicio de clientes.
+
+## Demo
+[![Customer API](https://img.youtube.com/vi/dONLBOuxCcU/0.jpg)](https://youtu.be/dONLBOuxCcU)
