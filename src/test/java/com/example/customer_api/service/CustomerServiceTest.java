@@ -9,6 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,5 +33,18 @@ public class CustomerServiceTest {
         Customer result = customerService.addCustomer(customer);
 
         assertEquals(customer, result);
+    }
+
+    @Test
+    public void testGetAllCustomers() {
+        List<Customer> customers = Arrays.asList(
+                new Customer(1L, "John Doe", "john@example.com", "123456789"),
+                new Customer(2L, "Jane Smith", "jane@example.com", "987654321")
+        );
+        when(customerRepository.findAll()).thenReturn(customers);
+
+        List<Customer> result = customerService.getAllCustomers();
+
+        assertEquals(customers, result);
     }
 }
