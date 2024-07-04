@@ -1,2 +1,19 @@
-package com.example.customer_api.config;public class OpenApiConfig {
+package com.example.customer_api.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class OpenApiConfig {
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Customer API")
+                        .version("1.0")
+                        .description("API para manejar clientes usando Spring Boot. Incluye métodos para agregar, actualizar, buscar y eliminar clientes (CRUD)"));
+    }
 }
