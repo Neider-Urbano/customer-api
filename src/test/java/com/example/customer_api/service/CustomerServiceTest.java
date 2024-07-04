@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,5 +47,17 @@ public class CustomerServiceTest {
         List<Customer> result = customerService.getAllCustomers();
 
         assertEquals(customers, result);
+    }
+
+    @Test
+    public void testGetCustomerById() {
+        Long customerId = 1L;
+        Customer customer = new Customer(customerId, "John Doe", "john@example.com", "123456789");
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+
+        Optional<Customer> result = customerService.getCustomerById(customerId);
+
+        assertTrue(result.isPresent());
+        assertEquals(customer, result.get());
     }
 }
