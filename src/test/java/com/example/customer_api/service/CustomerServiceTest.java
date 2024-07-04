@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -59,5 +61,25 @@ public class CustomerServiceTest {
 
         assertTrue(result.isPresent());
         assertEquals(customer, result.get());
+    }
+
+    @Test
+    public void testUpdateCustomer() {
+        Long customerId = 1L;
+        Customer existingCustomer = new Customer(customerId, "John Doe", "john@example.com", "123456789");
+        Customer updatedCustomer = new Customer(customerId, "John Smith", "john.smith@example.com", "987654321");
+
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(existingCustomer));
+        when(customerRepository.save(any(Customer.class))).thenReturn(updatedCustomer);
+
+        Customer result = customerService.updateCustomer(updatedCustomer);
+
+        assertEquals(updatedCustomer.getId(), result.getId());
+        assertEquals(updatedCustomer.getName(), result.getName());
+        assertEquals(updatedCustomer.getEmail(), result.getEmail());
+        assertEquals(updatedCustomer.getPhoneNumber(), result.getPhoneNumber());
+
+        verify(customerRepository).findById(customerId);
+        verify(customerRepository).save(any(Customer.class));
     }
 }

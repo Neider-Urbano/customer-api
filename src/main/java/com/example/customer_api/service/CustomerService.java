@@ -24,4 +24,17 @@ public class CustomerService {
     public Optional<Customer> getCustomerById(Long id) {
         return customerRepository.findById(id);
     }
+
+    public Customer updateCustomer(Customer customer) {
+        Optional<Customer> existingCustomerOptional = customerRepository.findById(customer.getId());
+        if (existingCustomerOptional.isPresent()) {
+            Customer existingCustomer = existingCustomerOptional.get();
+            existingCustomer.setName(customer.getName());
+            existingCustomer.setEmail(customer.getEmail());
+            existingCustomer.setPhoneNumber(customer.getPhoneNumber());
+            return customerRepository.save(existingCustomer);
+        } else {
+            throw new RuntimeException("Customer not found");
+        }
+    }
 }
